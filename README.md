@@ -37,4 +37,4 @@ Untuk testing, gunakan PowerShell commands seperti di atas.
 r dan login.
 Token JWT didapat dari response login.
 Untuk testing, gunakan PowerShell commands seperti di atas.
->>>>>>> 246e26fbd9676100ead6ff3b5158b06abdb49490
+
