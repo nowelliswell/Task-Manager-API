@@ -18,8 +18,8 @@ Invoke-WebRequest -Uri "http://localhost:8081/auth/login" -Method POST -ContentT
 Simpan token JWT dari response login untuk digunakan di endpoint berikutnya.
 
 3. Lihat Users yang Terdaftar (Get Users)
-
 Invoke-WebRequest -Uri "http://localhost:8081/auth/users" -Method GET
+
 4. Lihat Task (Get Tasks)
 Invoke-WebRequest -Uri "http://localhost:8081/tasks/" -Method GET -Headers @{"Authorization" = "Bearer YOUR_JWT_TOKEN_HERE"}
 
