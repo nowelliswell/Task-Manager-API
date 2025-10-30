@@ -7,3 +7,7 @@
 - [x] Fix auth_api.dart: Ensure db access works with updated DatabaseService
 - [ ] Run 'dart pub get' to install dependencies
 - [ ] Test server functionality
+- [x] Fix GET /tasks route in task_api.dart: Implement proper handler with authentication and user-specific task retrieval
+- [x] Fix POST / route in task_api.dart: Add authentication and insert task with user_id
+- [ ] Verify PUT and DELETE routes in task_api.dart are working correctly
+- [ ] Run server and test GET tasks endpoint

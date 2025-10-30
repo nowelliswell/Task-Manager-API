@@ -9,10 +9,10 @@ class JwtService {
     return jwt.sign(SecretKey(_secret), expiresIn: Duration(hours: 2));
   }
 
-  bool verifyToken(String token) {
+  dynamic verifyToken(String token) {
     try {
-      JWT.verify(token, SecretKey(_secret));
-      return true;
+      final jwt = JWT.verify(token, SecretKey(_secret));
+      return jwt.payload;
     } catch (e) {
       return false;
     }

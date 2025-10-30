@@ -41,6 +41,17 @@ class AuthApi {
       }
     });
 
+    router.get('/users', (Request req) {
+      final result = db.select('SELECT id, username FROM users');
+      final users = result
+          .map((row) => {'id': row['id'], 'username': row['username']})
+          .toList();
+      return Response.ok(
+        jsonEncode(users),
+        headers: {'Content-Type': 'application/json'},
+      );
+    });
+
     return router;
   }
 }
