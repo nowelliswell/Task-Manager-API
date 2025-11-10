@@ -4,8 +4,8 @@ import 'dart:io';
 class JwtService {
   final String _secret = Platform.environment['JWT_SECRET'] ?? 'supersecretkey';
 
-  String generateToken(String username) {
-    final jwt = JWT({'username': username});
+  String generateToken(String email) {
+    final jwt = JWT({'email': email});
     return jwt.sign(SecretKey(_secret), expiresIn: Duration(hours: 2));
   }
 

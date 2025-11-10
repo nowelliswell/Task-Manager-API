@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:shelf/shelf.dart';
 import 'package:shelf/shelf_io.dart' as io;
 import 'package:shelf_router/shelf_router.dart';
@@ -11,8 +12,17 @@ void main() async {
   final authApi = AuthApi();
   final taskApi = TaskApi();
 
+  // Root health route
+  router.get(
+    '/',
+    (Request req) => Response.ok(
+      jsonEncode({'status': 'ok'}),
+      headers: {'content-type': 'application/json'},
+    ),
+  );
+
   router.mount('/auth/', authApi.router.call);
-  router.mount('/tasks/', taskApi.router.call);
+  router.mount('/tasks', taskApi.router.call);
 
   final handler = Pipeline()
       .addMiddleware(logRequests())

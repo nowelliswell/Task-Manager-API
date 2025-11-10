@@ -14,37 +14,37 @@ class AuthApi {
     router.post('/register', (Request req) async {
       final body = jsonDecode(await req.readAsString());
       try {
-        db.execute('INSERT INTO users (username, password) VALUES (?, ?)', [
-          body['username'],
+        db.execute('INSERT INTO users (email, password) VALUES (?, ?)', [
+          body['email'],
           body['password'],
         ]);
         return Response.ok('User terdaftar');
       } catch (e) {
-        return Response(400, body: 'Username sudah ada');
+        return Response(400, body: 'Email sudah ada');
       }
     });
 
     router.post('/login', (Request req) async {
       final body = jsonDecode(await req.readAsString());
       final result = db.select(
-        'SELECT * FROM users WHERE username = ? AND password = ?',
-        [body['username'], body['password']],
+        'SELECT * FROM users WHERE email = ? AND password = ?',
+        [body['email'], body['password']],
       );
       if (result.isNotEmpty) {
-        final token = jwt.generateToken(body['username']);
+        final token = jwt.generateToken(body['email']);
         return Response.ok(
-          jsonEncode({'token': token}),
+          jsonEncode({'token': token, 'email': body['email']}),
           headers: {'Content-Type': 'application/json'},
         );
       } else {
-        return Response(401, body: 'Username/password salah');
+        return Response(401, body: 'Email/password salah');
       }
     });
 
     router.get('/users', (Request req) {
-      final result = db.select('SELECT id, username FROM users');
+      final result = db.select('SELECT id, email FROM users');
       final users = result
-          .map((row) => {'id': row['id'], 'username': row['username']})
+          .map((row) => {'id': row['id'], 'email': row['email']})
           .toList();
       return Response.ok(
         jsonEncode(users),

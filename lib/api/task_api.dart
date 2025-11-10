@@ -15,10 +15,10 @@ class TaskApi {
       return null;
     }
     final userMap = user;
-    final username = userMap['username'];
+    final email = userMap['email'];
 
-    final userResult = db.select('SELECT id FROM users WHERE username = ?', [
-      username,
+    final userResult = db.select('SELECT id FROM users WHERE email = ?', [
+      email,
     ]);
     if (userResult.isEmpty) {
       return null;
