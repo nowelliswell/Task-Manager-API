@@ -1,40 +1,66 @@
+Daftar Command untuk Semua Fungsi API
+Berikut adalah semua command untuk menguji fungsi API menggunakan PowerShell (seperti di test_api.ps1). Pastikan server berjalan di background. Ganti placeholder seperti YOUR_JWT_TOKEN_HERE dengan token yang didapat dari login.
 
-0. Menjalankan Server
+1. Endpoint Root (Status Server)
+GET / (Status Server):
 
-dart run bin/server.dart
-Server akan berjalan di http://localhost:8081. Jalankan di terminal terpisah atau background.
+Invoke-WebRequest -Uri "http://localhost:8080/" -Method GET
+Response: {"status":"ok"}
+2. Endpoint Auth (Autentikasi)
+POST /auth/register (Register User):
 
-1. Register User : 
-Invoke-WebRequest -Uri "http://localhost:8081/auth/register" -Method POST -ContentType "application/json" -Body '{"username": "john_doe", "password": "password123"}'
 
-2. Login User : 
-Invoke-WebRequest -Uri "http://localhost:8081/auth/login" -Method POST -ContentType "application/json" -Body '{"username": "john_doe", "password": "password123"}'
-Simpan token JWT dari response login untuk digunakan di endpoint berikutnya.
+Invoke-WebRequest -Uri "http://localhost:8080/auth/register" -Method POST -ContentType "application/json" -Body '{"email": "john_doe@example.com", "password": "password123"}'
+Response: {"message":"Registrasi berhasil"}
 
-3. Lihat Users yang Terdaftar (Get Users) : 
-Invoke-WebRequest -Uri "http://localhost:8081/auth/users" -Method GET
+POST /auth/login (Login User):
 
-4. Lihat Task (Get Tasks) : 
-Invoke-WebRequest -Uri "http://localhost:8081/tasks/" -Method GET -Headers @{"Authorization" = "Bearer YOUR_JWT_TOKEN_HERE"}
 
-5. Tambah Task (Create Task) : 
-Invoke-WebRequest -Uri "http://localhost:8081/tasks/" -Method POST -Headers @{"Authorization" = "Bearer YOUR_JWT_TOKEN_HERE"; "Content-Type" = "application/json"} -Body '{"title": "Belajar Dart", "description": "Mempelajari bahasa pemrograman Dart"}'
+Invoke-WebRequest -Uri "http://localhost:8080/auth/login" -Method POST -ContentType "application/json" -Body '{"email": "john_doe@example.com", "password": "password123"}'
+Response: {"token":"YOUR_JWT_TOKEN_HERE"} (Simpan token untuk endpoint berikutnya)
 
-6. Update Task (Mark as Completed/Incomplete) : 
-Invoke-WebRequest -Uri "http://localhost:8081/tasks/1" -Method PUT -Headers @{"Authorization" = "Bearer YOUR_JWT_TOKEN_HERE"; "Content-Type" = "application/json"} -Body '{"completed": true}'
-Ganti 1 dengan ID task yang ingin diupdate.
+3. Endpoint Tasks (Manajemen Tugas - Membutuhkan JWT Token)
+GET /tasks (Lihat Semua Tasks User):
 
-7. Delete Task : 
-Invoke-WebRequest -Uri "http://localhost:8081/tasks/1" -Method DELETE -Headers @{"Authorization" = "Bearer YOUR_JWT_TOKEN_HERE"}
-Ganti 1 dengan ID task yang ingin dihapus.
 
-Catatan:
-Jalankan server terlebih dahulu dengan dart run bin/server.dart.
-Endpoint /auth/users tidak memerlukan authentication.
-Semua endpoint task memerlukan header Authorization: Bearer <token> kecuali register dan login.
-Token JWT didapat dari response login.
-Untuk testing, gunakan PowerShell commands seperti di atas.
-r dan login.
-Token JWT didapat dari response login.
-Untuk testing, gunakan PowerShell commands seperti di atas.
+Invoke-WebRequest -Uri "http://localhost:8080/tasks/" -Method GET -Headers @{"Authorization" = "Bearer YOUR_JWT_TOKEN_HERE"}
+Response: {"tasks":[...list of tasks...]}
+(Hanya menampilkan tasks milik user yang login)
 
+POST /tasks (Tambah Task Baru):
+
+
+Invoke-WebRequest -Uri "http://localhost:8080/tasks/" -Method POST -Headers @{"Authorization" = "Bearer YOUR_JWT_TOKEN_HERE"; "Content-Type" = "application/json"} -Body '{"title": "Belajar Dart", "description": "Mempelajari bahasa pemrograman Dart"}'
+Response: {...task data...}
+
+GET /tasks/{id} (Lihat Task Spesifik):
+
+
+Invoke-WebRequest -Uri "http://localhost:8080/tasks/64f1a2b3c4d5e6f7g8h9i0j1" -Method GET -Headers @{"Authorization" = "Bearer YOUR_JWT_TOKEN_HERE"}
+Response: {...task data...} (Ganti ID dengan ID task yang valid)
+
+PUT /tasks/{id} (Update Task - Mark Completed/Incomplete):
+
+
+Invoke-WebRequest -Uri "http://localhost:8080/tasks/64f1a2b3c4d5e6f7g8h9i0j1" -Method PUT -Headers @{"Authorization" = "Bearer YOUR_JWT_TOKEN_HERE"; "Content-Type" = "application/json"} -Body '{"completed": true}'
+Response: Task berhasil diupdate (Ganti ID dengan ID task yang valid)
+
+DELETE /tasks/{id} (Hapus Task):
+
+
+Invoke-WebRequest -Uri "http://localhost:8080/tasks/64f1a2b3c4d5e6f7g8h9i0j1" -Method DELETE -Headers @{"Authorization" = "Bearer YOUR_JWT_TOKEN_HERE"}
+Response: Task berhasil dihapus (Ganti ID dengan ID task yang valid)
+
+Script Testing Otomatis
+Gunakan script test_api.ps1 untuk testing otomatis:
+
+
+./test_api.ps1
+Script ini akan register, login, dan test beberapa endpoint tasks secara otomatis.
+
+Catatan Penting
+Semua endpoint tasks memerlukan header Authorization: Bearer <token> kecuali register dan login.
+Token JWT didapat dari response login dan berlaku 1 hari.
+Jika ada error, periksa log server di terminal.
+Untuk production, ganti secret key di jwt_service.dart dengan yang lebih aman.
+Database collections: users dan tasks di MongoDB.
